@@ -457,4 +457,27 @@ tools/ImageCropper/**/*.png
 # M9A
 python/
 .venv/
+# 确保无论虚拟环境名称如何都被忽略
+m9a_env/
+# 任何可能的虚拟环境目录
+**/venv/
+**/.venv/
+**/env/
+**/.env/
+# 环境变量配置文件
+.env
+.env.*
+!.env.example
+# 配置文件目录
 config/
+# 日志文件目录
+logs/
+**/*.log
+# 临时目录
+tmp/
+temp/
+# Conda相关文件
+.conda/
+**/conda-meta/
+**/env.d/
+**/conda.recipe/

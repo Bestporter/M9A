@@ -3,4 +3,4 @@ from .logger import *
 try:
     from .time import *
 except ImportError:
-    logger.warning("utils moudule import failed")
+    logger.warning("utils module import failed")

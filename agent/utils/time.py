@@ -72,8 +72,8 @@ def is_current_period(timestamp_ms, timezone="Asia/Shanghai"):
     else:
         # 否则使用本月1号
         month_start = now.replace(day=1, hour=5, minute=0, second=0, microsecond=0)
-        # 如果已经过了1号5点，但当前日期小于1号，则需要往前调整一个月
-        if now.day < 1 or (now.day == 1 and now.hour < 5):
+        # 如果当前日期是1号但不到5点，则需要往前调整一个月
+        if now.day == 1 and now.hour < 5:
             if month_start.month == 1:
                 month_start = month_start.replace(year=month_start.year - 1, month=12)
             else:
