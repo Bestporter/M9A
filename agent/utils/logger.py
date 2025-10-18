@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 
 try:
     from loguru import logger as _logger
@@ -42,8 +43,37 @@ try:
     logger = setup_logger()
 except ImportError:
     import logging
-
-    logging.basicConfig(
-        format="%(asctime)s | %(levelname)s | %(message)s", level=logging.INFO
-    )
-    logger = logging
+    import sys
+    import os
+    
+    # 配置logging模块，使其接口与loguru尽可能一致
+    class LoggerAdapter(logging.LoggerAdapter):
+        def exception(self, msg, *args, **kwargs):
+            self.error(msg + "\n" + kwargs.get('exc_info', True), exc_info=True)
+        
+        def debug(self, msg, *args, **kwargs):
+            self.log(logging.DEBUG, msg, *args, **kwargs)
+    
+    # 设置日志格式
+    logger = logging.getLogger('M9A')
+    logger.setLevel(logging.INFO)
+    
+    # 控制台处理器
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.INFO)
+    console_formatter = logging.Formatter('[%(levelname)s] %(message)s')
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+    
+    # 文件处理器
+    log_dir = "debug/custom"
+    os.makedirs(log_dir, exist_ok=True)
+    file_handler = logging.FileHandler(f"{log_dir}/{datetime.now().strftime('%Y-%m-%d')}.log")
+    file_handler.setLevel(logging.DEBUG)
+    file_formatter = logging.Formatter('%(asctime)s.%(msecs)03d | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s',
+                                     datefmt='%Y-%m-%d %H:%M:%S')
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
+    
+    # 创建适配器使接口更兼容
+    logger = LoggerAdapter(logger, {})
